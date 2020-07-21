@@ -1,44 +1,99 @@
-//creo un array di 16 numeri per il computer che vadano da 1 a 100
+// bonus:chiedo all utente di scegliere il livello di difficoltà
+do{
+    var scelta = prompt('A quale livello vuoi giocare? Inserisci FACILE, MEDIO o DIFFICILE').toUpperCase();
+    console.log(scelta);
+} while(scelta != 'FACILE' && scelta != 'MEDIO' && scelta != 'DIFFICILE')
 
-var computer=[];
-var randomComputer;
-
-//con un ciclo for escludo i doppioni dall array del pc
-
-for (var i = 0; computer.length < 16; i++){
-    randomComputer = generaNumero(1,100);
-    if (randomComputer != computer[i]) {
-        computer.push(randomComputer);
-    }
+switch (scelta) {
+    case 'FACILE':
+        var massimo = 100;
+        break;
+    case 'MEDIO':
+        var massimo = 80;
+        break;
+    case 'DIFFICILE':
+        var massimo = 50;
+        break;
 }
 
-console.log('Array computer', computer);
+//creo un array del pc con una funzione e con un altra escludo da esso i doppioni
+var numeriPc = [];
+var randomPc;
 
 
-//creo la funzione con cui riempire l array computer di numeri casuali
-
+// Con questa funzione creo i numeri casuali degli array
 function generaNumero(min, max){
     return Math.floor(Math.random() * (max - min + 1) ) + min;
 }
 
+// Con questa funzione controllo che negli array non ci siano doppioni
+function trovaElemento(lista,elemento){
+    var i = 0;
+    while (i < lista.length){
+        if(elemento == lista[i]){
+            return true;
+        }
+        i++;
+    }
+    return false;
+}
 
-//chiedo all utente di scegliere 84 volte un numero da 1 a 100 che non sia doppione
 
-var utente=[];
-var randomUtente;
+//controllo che non ci siano doppioni nell array di 16 numeri del computer
 
-//anche in questo caso procedo come con il randomComputer
+while(numeriPc.length < 16){
+    randomPc = generaNumero(1,100);
+    var doppionePc = trovaElemento(numeriPc,randomPc);
 
-for (var i = 0; utente.length < 84; i++){
-    randomUtente = generaNumero(1,100);
-    if (randomUtente != utente[i]) {
-        utente.push(randomUtente);
+    if (doppionePc == false) {
+        numeriPc.push(randomPc);
     }
 }
 
-console.log('Array utente', utente);
+console.log('Array pc', numeriPc);
+
+// creo l'array per i numeri dell'utente
+var numeriUtente = [];
+var possibilita = massimo - numeriPc.length;
 
 
-function generaNumero(min, max){
-    return Math.floor(Math.random() * (max - min + 1) ) + min;
+
+
+// eleaboro le posibilità dei scelta dell utente
+var trovato = false;
+var numeroUtente;
+
+while(numeriUtente.length < possibilita && trovato == false){
+    numeroUtente = parseInt(prompt('Inserisci un numero tra 1 e ' + massimo + ' e vinci se non è stato scelto dal computer'));
+    while(numeroUtente <= 0 || numeroUtente > massimo){
+        numeroUtente = parseInt(prompt('Errore. Tenta di nuovo con un numero compreso tra 1 e ' + massimo ));
+    }
+    while(isNaN(numeroUtente)){
+        numeroUtente = parseInt(prompt('Il numero deve essere compreso tra 1 e ' + massimo));
+    }
+
+
+    trovato = trovaElemento(numeriPc,numeroUtente);
+    if (trovato == false) {
+        var doppioneUtente = trovaElemento(numeriUtente,numeroUtente);
+        if (doppioneUtente == false) {
+            numeriUtente.push(numeroUtente);
+        } else {
+            alert('Numero già inserito');
+        }
+    }
+}
+
+console.log('Array Utente', numeriUtente);
+
+
+//elaboro i risultati
+var risultato;
+
+if(trovato){
+    risultato = 'SCONFITTA!';
+    console.log('SCONFITTA!')
+} else {
+    risultato = 'VITTORIA!';
+    console.log('VITTORIA')
 }
